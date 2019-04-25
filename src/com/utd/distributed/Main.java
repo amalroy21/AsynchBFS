@@ -9,9 +9,9 @@ package com.utd.distributed;
 
 import com.utd.distributed.master.Master;
 import com.utd.distributed.process.Process;
-import com.utd.distributed.util.ReadPropertyFile;
-
-import java.util.Properties;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class Main {
 	
@@ -22,24 +22,30 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            String filePath = "config.properties";
-            Properties prop = ReadPropertyFile.readProperties(filePath);
-            
-            System.out.println("-------Distributed Algorithm SynchBFS-------");
-            ProcessCount = Integer.parseInt(prop.getProperty("numberofProcess"));
-            System.out.println("No of Process : "+ProcessCount);
-            int root = Integer.parseInt(prop.getProperty("rootNode"));
-            System.out.println("Process "+ root + " is the root process");
-            p = new Process[ProcessCount];
-			Master master = new Master(ProcessCount,root);
-			String[] edgeList = prop.getProperty("edgeList").split(",");
-			int[][] neighbors = new int[ProcessCount][ProcessCount];
-			
+            String filePath = "data.txt";
+            System.out.println("-------Distributed Algorithm Asynchronous BFS Starts Here-------");
+            File file = new File(filePath);
+			Scanner sc = new Scanner(file);
+			ProcessCount = sc.nextInt();
+			System.out.println("The number of processes are "+ProcessCount);
+			source = sc.nextInt();
+			System.out.println(source+" is the source process");
+			p = new Process[ProcessCount];
+			HashMap<Integer,Integer> neighborsAndDistance;
+			Master master = new Master(ProcessCount);
+			int temp = 0;
 			for(int i = 0; i < ProcessCount; i++){
+				neighborsAndDistance = new HashMap<>();
 				for(int j = 0; j < ProcessCount; j++){
-					neighbors[i][j] = Integer.parseInt(edgeList[i].substring(j, j+1));
+					temp = sc.nextInt();
+					if(temp != -1){
+						neighborsAndDistance.put(j, temp);
+					}
 				}
-				p[i] = new Process(i,root,neighbors[i],master);
+				if(i == source)
+					p[i] = new Process(i,neighborsAndDistance,master,i,0);
+				else
+					p[i] = new Process(i,neighborsAndDistance,master,-1,Long.MAX_VALUE);
 			}
 			
 			master.setProcesses(p);
@@ -49,6 +55,7 @@ public class Main {
 				Thread tempThread = new Thread(p[i]);
 				tempThread.start();
 			}
+			sc.close();
         }
         catch (Exception ex)    {
             ex.printStackTrace();
