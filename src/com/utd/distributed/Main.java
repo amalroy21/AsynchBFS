@@ -38,7 +38,7 @@ public class Main {
 				neighborsAndDistance = new HashMap<>();
 				for(int j = 0; j < ProcessCount; j++){
 					temp = sc.nextInt();
-					if(temp != -1){
+					if(temp != -1 && i!=j){
 						neighborsAndDistance.put(j, temp);
 					}
 				}

@@ -3,10 +3,12 @@ package com.utd.distributed.process;
 public class Parent{
 	public int weight;
 	public int parent;
+	
 	public Parent(int parent, int weight){
 		this.parent = parent;
 		this.weight = weight;
 	}
+	
 	public int getWeight() {
 		return weight;
 	}

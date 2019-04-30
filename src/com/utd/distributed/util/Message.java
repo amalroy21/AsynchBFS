@@ -1,10 +1,12 @@
 package com.utd.distributed.util;
 
 public class Message {
+	
 	private int fromId;
 	private long sentRound;
 	private long transmissionTime;
 	private long curDistance;
+	private boolean isDummy;
 
 	public int getFromId() {
 		return fromId;
@@ -36,5 +38,19 @@ public class Message {
 
 	public void setCurDistance(long curDistance) {
 		this.curDistance = curDistance;
+	}
+
+	public boolean isDummy() {
+		return isDummy;
+	}
+
+	public void setDummy(boolean isDummy) {
+		this.isDummy = isDummy;
+	}
+	
+	@Override
+	public String toString() {
+		return "Message [fromId=" + fromId + ", sentRound=" + sentRound + ", transmissionTime=" + transmissionTime
+				+ ", curDistance=" + curDistance + ", isDummy=" + isDummy + "]";
 	}
 }

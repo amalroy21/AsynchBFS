@@ -16,6 +16,7 @@ public class Master implements Runnable{
 	private Process[] p;
 	private boolean masterDone = false;
 	public static volatile boolean treeDone = false;
+	private int messageCounter=0;
 	
 	public Master(int processCount){
 		this.processCount = processCount;
@@ -24,7 +25,6 @@ public class Master implements Runnable{
 		}
 	}
 	
-	// Passing the Reference of the Process
 	public void setProcesses(Process[] p){
 		this.p = p;
 		for(int i = 0; i < processCount; i++){
@@ -34,24 +34,21 @@ public class Master implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+
 		System.out.println("Master Process started");
 		
 		while (!roundDone()) {
-			//System.out.println("round done1");
 			// Waiting till all the Processes have started
 		}
 		resetRoundDetails();
 		initiateProcesses();
 		while (!roundDone()) {
-			//System.out.println("round done 2");
 			//Initiating the messages from all the Processes
 		}
 		resetRoundDetails();
 		startRound();
 		while(!masterDone){
 			while (!roundDone()) {
-				//System.out.println("round done 3");
 				// Waiting till all the Processes complete one round
 			}
 			while(!treeDone){
@@ -76,7 +73,6 @@ public class Master implements Runnable{
 	
 	// Assigning parents for each Process
 	public synchronized void assignParents(int id, int parent, int weight) {
-		// TODO Auto-generated method stub
 		Parent p = new Parent(parent,weight);
 		parents.put(id, p);
 	}
@@ -95,7 +91,7 @@ public class Master implements Runnable{
 	
 	// Constructing and printing the Shortest Paths Tree
 	public void printTree(){
-		System.out.println("Asynch BFS Algorithm Executed !!");
+		System.out.println("Asynchronous BFS Algorithm is Executed Successfully!!");
 		int result[][] = new int[processCount][processCount];
 		for(int i = 0; i < result.length; i++){
 			for(int j = 0; j < result[0].length;j++){
@@ -112,7 +108,7 @@ public class Master implements Runnable{
 			}
 		}
 		
-		System.out.println("Following is the resultant BFS Tree as a Adjacency List: ");
+		System.out.println("Following is the resultant BFS Tree as an Adjacency List: ");
 		System.out.println("Process"+"\t"+"Neighbours");
 		for (int i = 0; i < processCount; i++) {
 			System.out.print(i+"\t");
@@ -123,12 +119,10 @@ public class Master implements Runnable{
 			}
 			System.out.println();
 		}
+		System.out.println("Total No of Messages :"+getMessageCounter());
 		
 	}
 	
-	
-	// Request for parent Process for each Process for building the Shortest
-			// path tree
 	private void getParents() {
 		for (int i = 0; i < processCount; i++) {
 			p[i].setMessageFromMaster("SendParent");
@@ -142,7 +136,7 @@ public class Master implements Runnable{
 		}
 	}
 	
-	// To start next round
+	// To initiate the processes
 	private void initiateProcesses() {
 		for (int i = 0; i < processCount; i++) {
 			p[i].setMessageFromMaster("Initiate");
@@ -167,5 +161,15 @@ public class Master implements Runnable{
 		
 		return true;
 	}
+	
+	public int getMessageCounter() {
+		return messageCounter;
+	}
+
+	public void setMessageCounter() {
+		this.messageCounter++;
+	}
+	
+	
 	
 }
